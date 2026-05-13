@@ -1,2 +1,3 @@
 .DS_Store
 dags/__pycache__/*
+.idea/*
