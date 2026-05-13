@@ -1,9 +1,10 @@
 import logging
+from datetime import timedelta
 
 import pendulum
 from airflow import DAG
-from airflow.operators.bash import BashOperator
-from airflow.operators.python import PythonOperator
+from airflow.providers.standard.operators.bash import BashOperator
+from airflow.providers.standard.operators.python import PythonOperator
 
 with DAG(
     dag_id="demo_04_hooks",
@@ -12,6 +13,7 @@ with DAG(
     schedule=None,
     catchup=False,
     tags=["demo", "hooks"],
+    default_args={"retries": 2, "retry_delay": timedelta(minutes=5)},
 ) as dag:
     intro = BashOperator(
         task_id="intro",

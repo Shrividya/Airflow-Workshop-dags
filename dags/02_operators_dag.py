@@ -1,10 +1,11 @@
 import logging
+from datetime import timedelta
 
 import pendulum
 from airflow import DAG
 from airflow.models.param import Param
-from airflow.operators.bash import BashOperator
-from airflow.operators.python import BranchPythonOperator, PythonOperator
+from airflow.providers.standard.operators.bash import BashOperator
+from airflow.providers.standard.operators.python import BranchPythonOperator, PythonOperator
 from airflow.utils.trigger_rule import TriggerRule
 
 with DAG(
@@ -14,6 +15,7 @@ with DAG(
     schedule=None,
     catchup=False,
     tags=["demo", "operators"],
+    default_args={"retries": 2, "retry_delay": timedelta(minutes=5)},
     params={
         "student_score": Param(85, type="integer", description="Score to evaluate")
     },

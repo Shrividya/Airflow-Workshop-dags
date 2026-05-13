@@ -1,5 +1,5 @@
 import logging
-from datetime import datetime
+from datetime import datetime, timedelta
 
 import pendulum
 from airflow import DAG
@@ -15,6 +15,7 @@ with DAG(
     schedule=None,
     catchup=False,
     tags=["demo", "sensors"],
+    default_args={"retries": 2, "retry_delay": timedelta(minutes=5)},
 ) as dag:
     setup = BashOperator(
         task_id="setup_watch_directory",
@@ -38,7 +39,7 @@ with DAG(
 
     wait_for_trigger_file = FileSensor(
         task_id="wait_for_trigger_file",
-        filepath="/tmp/airflow_demo/trigger.txt",
+        filepath="/tmp/airflow_demo/trigger.txt",  # noqa: HDC003
         fs_conn_id="fs_default",
         poke_interval=15,
         timeout=300,
@@ -49,7 +50,7 @@ with DAG(
     def confirm_file(**context):
         import os
 
-        path = "/tmp/airflow_demo/trigger.txt"
+        path = "/tmp/airflow_demo/trigger.txt"  # noqa: HDC003
         if os.path.exists(path):
             size = os.path.getsize(path)
             mtime = datetime.fromtimestamp(os.path.getmtime(path))

@@ -1,0 +1,33 @@
+name: DAG Lint & Anti-Pattern Check
+
+on:
+  push:
+    paths:
+      - "dags/**"
+  pull_request:
+    paths:
+      - "dags/**"
+
+jobs:
+  dag-lint:
+    name: Check DAGs for anti-patterns
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install airflow-antipattern
+        run: pip install airflow-antipattern
+
+      - name: Fail on HIGH severity violations
+        run: airflow-antipattern check dags/ --severity=high
+
+      - name: Report MEDIUM and LOW violations (informational)
+        if: always()
+        run: airflow-antipattern check dags/ --severity=medium || true

@@ -1,7 +1,7 @@
 import logging
 
 import pendulum
-from airflow.decorators import dag, task
+from airflow.sdk import dag, task
 
 
 @dag(
