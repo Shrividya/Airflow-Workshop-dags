@@ -1,0 +1,6 @@
+apache-airflow-providers-common-ai
+apache-airflow-providers-standard
+unstructured[pdf]==0.17.2
+pydantic-ai-slim[anthropic]
+sentence-transformers==3.3.1
+

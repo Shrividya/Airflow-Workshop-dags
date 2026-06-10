@@ -1,3 +1,31 @@
 .DS_Store
 dags/__pycache__/*
 .idea/*
+/airflow_unstructured-rag/.env
+airflow-unstructured-rag/config/
+.env
+/docker-compose.yaml
+# Airflow runtime
+logs/
+airflow.db
+airflow-webserver.pid
+standalone_admin_password.txt
+
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.venv/
+venv/
+dist/
+build/
+
+output/*.json
+
+# OS
+.DS_Store
+Thumbs.db
+
+# IDE
+.vscode/
+.idea/
