@@ -1,5 +1,6 @@
 # airflow-unstructured-rag
 
+
 A research paper ingestion pipeline built on **Apache Airflow 3.x** that parses PDFs, summarizes them with Claude Haiku via the `@task.llm` decorator, and gates the output behind a human-in-the-loop review step.
 
 Two DAGs are included — pick the one that fits your environment:
@@ -8,6 +9,7 @@ Two DAGs are included — pick the one that fits your environment:
 |-----|------|-----------|----------|
 | `pdf_research_pipeline` | `pdf_research.py` | `unstructured` | Complex layouts, tables, OCR |
 | `pdf_research_pipeline_pdfplumber` | `pdf_research_pdfplumber.py` | `pdfplumber` | Clean text-based PDFs, lighter install |
+
 
 ## Pipeline Flow
 
@@ -21,8 +23,9 @@ scan_papers → parse_and_chunk → summarize_chunks → [HITL Review] → save_
 
 ## Prerequisites
 
-- Docker & Docker Compose
-- An Anthropic API key → [console.anthropic.com](https://console.anthropic.com)
+- Docker and Docker Compose installed
+- Python 3.9+ (for the download script)
+- An Anthropic API key: [console.anthropic.com](https://console.anthropic.com)
 
 ---
 
@@ -63,7 +66,6 @@ docker compose up -d
 
 Wait ~60 seconds, then open: **http://localhost:8080**
 
-Login: `airflow` / `airflow`
 
 ### 5. Create the Anthropic connection
 
@@ -167,6 +169,6 @@ chromadb>=0.5.0
 ## Stopping
 
 ```bash
-docker compose down          # stop containers
-docker compose down -v       # stop + delete volumes (full reset)
+docker compose down
+docker compose down -v
 ```
