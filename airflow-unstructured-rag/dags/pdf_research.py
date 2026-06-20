@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import json
 import os
-from datetime import datetime
+from datetime import datetime, timezone
 from pathlib import Path
 
 from airflow.providers.common.compat.sdk import dag, task
@@ -17,15 +17,14 @@ MODEL = "claude-haiku-4-5-20251001"
 @dag(
     dag_id="pdf_research_pipeline",
     description="Parse research PDFs with unstructured, summarize with Claude Haiku, review with HITL",
-    schedule=None,                 # trigger manually
-    start_date=datetime(2025, 1, 1),
+    schedule=None,
+    start_date=datetime(2026, 6, 1),
     catchup=False,
     tags=["unstructured", "rag", "hitl", "llm"],
 )
 def pdf_research_pipeline():
     @task
     def scan_papers() -> list[str]:
-        """Return list of PDF paths found in the paper directory."""
         PAPERS_DIR.mkdir(parents=True, exist_ok=True)
         pdfs = [str(p) for p in PAPERS_DIR.glob("*.pdf")]
         if not pdfs:
@@ -133,12 +132,12 @@ def pdf_research_pipeline():
             summaries = [{"raw_response": clean}]
 
         output = {
-            "pipeline_run": datetime.utcnow().isoformat(),
+            "pipeline_run": datetime.now(timezone.utc).isoformat(),
             "total_chunks_parsed": len(chunks),
             "summaries": summaries,
         }
 
-        out_path = OUTPUT_DIR / f"summaries_{datetime.utcnow().strftime('%Y%m%d_%H%M%S')}.json"
+        out_path = OUTPUT_DIR / f"summaries_{datetime.now(timezone.utc).strftime('%Y%m%d_%H%M%S')}.json"
         out_path.write_text(json.dumps(output, indent=2))
         print(f"Saved {len(summaries)} summaries to {out_path}")
         return str(out_path)
