@@ -35,23 +35,13 @@ cd airflow-unstructured-rag
 
 ### 2. Configure your environment
 
-```bash
-cp .env.example .env
-```
-
-Open `.env` and replace `sk-ant-your-key-here` with your real Anthropic API key.
+Open `.env` and add Model API key.
 
 Never commit `.env` to git. It is in `.gitignore` already.
 
-### 3. Download sample papers (optional)
+Drop your own `.pdf` files into `data/paper/`.
 
-```bash
-python scripts/download_sample_papers.py
-```
-
-Or drop your own `.pdf` files into `data/paper/`.
-
-### 4. Start Airflow
+### 3. Start Airflow
 
 ```bash
 docker compose up airflow-init
@@ -59,8 +49,6 @@ docker compose up -d
 ```
 
 Wait about 60 seconds, then open http://localhost:8080
-
-Login: `airflow` / `airflow`
 
 ### 5. Add the Anthropic connection
 
@@ -70,8 +58,8 @@ In the Airflow UI go to Admin, then Connections, then click the plus button and 
 |-----------|-------|
 | Conn ID   | `anthropic_default` |
 | Conn Type | `pydanticai` |
-| Extra     | `{"model": "anthropic:claude-haiku-4-5-20251001"}` |
-| Password  | your Anthropic API key |
+| Extra     | `{"model": "<model name>"}` |
+| Password  | your Model's API key |
 
 ### 6. Trigger the DAG
 
@@ -87,6 +75,7 @@ In the Airflow UI go to Admin, then Connections, then click the plus button and 
 
 ## Project Structure
 
+Entire folder structure has not been committed to only commit essential changes.
 ```
 .
 ├── dags/
@@ -94,11 +83,8 @@ In the Airflow UI go to Admin, then Connections, then click the plus button and 
 ├── data/
 │   └── paper/
 ├── output/
-├── scripts/
-│   └── download_sample_papers.py
 ├── docker-compose.yml
 ├── Dockerfile
-├── .env.example
 ├── .env
 ├── .gitignore
 └── README.md
@@ -110,7 +96,7 @@ In the Airflow UI go to Admin, then Connections, then click the plus button and 
 
 | What | Where | How |
 |------|-------|-----|
-| Change model | Airflow connection `anthropic_default` | Update `model` in the Extra JSON field |
+| Change model | Airflow connection `anthropic_default`(in this case) | Update `model` in the Extra JSON field |
 | Process more chunks | `summarize_chunks` in `dags/pdf_research.py` | Change `chunks[:20]` limit |
 | Use hi-res OCR | `parse_and_chunk` task | Change `strategy="fast"` to `"hi_res"` |
 | Add vector store | After `save_output` | Add a new task using chromadb |
