@@ -5,7 +5,7 @@ import re
 from datetime import datetime, timezone
 from pathlib import Path
 
-from airflow.providers.common.compat.sdk import dag, task
+from airflow.sdk import dag, task
 from airflow.providers.standard.operators.hitl import HITLBranchOperator
 
 PAPERS_DIR = Path("/opt/airflow/data/paper")
