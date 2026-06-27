@@ -70,17 +70,9 @@ def nightly_revenue_pipeline():
     extract_query = generate_extract_query()
     route >> [notify, extract_query]
 
-    # Fix 3 & 4: use @task with PostgresHook to return rows as list[dict],
-    # and use consistent postgres_source connection
-    @task
+    @task.sql
     def run_extract_query(sql: str) -> list[dict]:
-        from airflow.providers.postgres.hooks.postgres import PostgresHook
-        hook = PostgresHook(postgres_conn_id="postgres_source")
-        conn = hook.get_conn()
-        cursor = conn.cursor()
-        cursor.execute(sql)
-        columns = [desc[0] for desc in cursor.description]
-        return [dict(zip(columns, row)) for row in cursor.fetchall()]
+        return sql
 
     rows = run_extract_query(extract_query)
 
