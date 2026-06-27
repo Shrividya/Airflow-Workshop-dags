@@ -23,6 +23,8 @@ MODEL = "claude-haiku-4-5-20251001"
 def pdf_research_pipeline():
     @task
     def scan_papers() -> list[str]:
+        from docling.document_converter import DocumentConverter
+
         PAPERS_DIR.mkdir(parents=True, exist_ok=True)
         pdfs = [str(p) for p in PAPERS_DIR.glob("*.pdf")]
         if not pdfs:
@@ -30,6 +32,9 @@ def pdf_research_pipeline():
                 f"No PDFs found in {PAPERS_DIR}. "
                 "Drop some .pdf files into data// and re-trigger the DAG."
             )
+        converter = DocumentConverter()
+        result = converter.convert(pdfs)
+        print(result.document.export_to_markdown())
         print(f"Found {len(pdfs)} PDF(s): {pdfs}")
         return pdfs
 
